@@ -1,13 +1,29 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function QuestionCard({ worldId, currentPhase, onSubmitPhase, onCancelPhase }) {
-  const questions = [
-    { q: `Fase ${currentPhase} - P1: Resuelve para x: 3x = 12`, options: ['2', '3', '4', '6'], correct: '4' },
-    { q: `Fase ${currentPhase} - P2: Evalúa 2² + 3²`, options: ['10', '13', '25', '5'], correct: '13' },
-    { q: `Fase ${currentPhase} - P3: Simplifica 2(x + 3)`, options: ['2x + 3', '2x + 6', 'x + 6', '5x'], correct: '2x + 6' },
-    { q: `Fase ${currentPhase} - P4: ¿Cuál es el valor de y si y = 2x - 1 y x = 3?`, options: ['4', '5', '6', '7'], correct: '5' },
-  ];
+export default function QuestionCard({ worldId, currentPhase, proficiencyLevel, onSubmitPhase, onCancelPhase }) {
+  const allQuestions = {
+    Principiante: [
+      { q: `Fase ${currentPhase} - P1: Resuelve para x: x + 2 = 5`, options: ['2', '3', '4', '5'], correct: '3' },
+      { q: `Fase ${currentPhase} - P2: Evalúa 2 + 3 * 2`, options: ['10', '8', '7', '6'], correct: '8' },
+      { q: `Fase ${currentPhase} - P3: Simplifica x + x`, options: ['x²', '2x', 'x', '0'], correct: '2x' },
+      { q: `Fase ${currentPhase} - P4: ¿Cuál es el valor de y si y = x + 1 y x = 3?`, options: ['2', '3', '4', '5'], correct: '4' },
+    ],
+    Intermedio: [
+      { q: `Fase ${currentPhase} - P1: Resuelve para x: 3x = 12`, options: ['2', '3', '4', '6'], correct: '4' },
+      { q: `Fase ${currentPhase} - P2: Evalúa 2² + 3²`, options: ['10', '13', '25', '5'], correct: '13' },
+      { q: `Fase ${currentPhase} - P3: Simplifica 2(x + 3)`, options: ['2x + 3', '2x + 6', 'x + 6', '5x'], correct: '2x + 6' },
+      { q: `Fase ${currentPhase} - P4: ¿Cuál es el valor de y si y = 2x - 1 y x = 3?`, options: ['4', '5', '6', '7'], correct: '5' },
+    ],
+    Avanzado: [
+      { q: `Fase ${currentPhase} - P1: Resuelve para x: 2x² - 8 = 0`, options: ['2, -2', '4', '2', '0'], correct: '2, -2' },
+      { q: `Fase ${currentPhase} - P2: Evalúa log₂(8) + 3²`, options: ['10', '11', '12', '13'], correct: '12' },
+      { q: `Fase ${currentPhase} - P3: Simplifica (x² - 9)/(x - 3)`, options: ['x - 3', 'x + 3', 'x', '1'], correct: 'x + 3' },
+      { q: `Fase ${currentPhase} - P4: ¿Cuál es la pendiente de 3y - 6x = 9?`, options: ['2', '3', '6', '-2'], correct: '2' },
+    ]
+  };
+
+  const questions = allQuestions[proficiencyLevel] || allQuestions['Intermedio'];
 
   const [currentQ, setCurrentQ] = useState(0);
   const [selected, setSelected] = useState(null);

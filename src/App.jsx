@@ -5,9 +5,12 @@ import QuestionCard from './components/QuestionCard';
 import AIEvaluationOverlay from './components/AIEvaluationOverlay';
 import TestCard from './components/TestCard';
 import TestResultScreen from './components/TestResultScreen';
+import DiagnosticSimulation from './components/DiagnosticSimulation';
+import ProficiencyDropdown from './components/ProficiencyDropdown';
 import './index.css';
 
 function App() {
+  const [proficiencyLevel, setProficiencyLevel] = useState(null);
   const [view, setView] = useState('world-map');
   const [selectedWorld, setSelectedWorld] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
@@ -166,6 +169,10 @@ function App() {
   const nodeProgress = selectedWorld ? (activeNodeProgress[selectedWorld] || {}) : {};
   const currentTestPhase = selectedWorld ? (activeTestProgress[selectedWorld] || 0) : 0;
 
+  if (!proficiencyLevel) {
+    return <DiagnosticSimulation onSelectLevel={setProficiencyLevel} />;
+  }
+
   return (
     <div style={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '40px 20px' }}>
       
@@ -208,6 +215,12 @@ function App() {
               <div style={{ width: `${progressPercent}%`, height: '100%', background: isDevMode ? '#ef4444' : 'var(--accent-primary)', transition: 'width 0.3s ease' }}></div>
             </div>
           </div>
+          
+          {/* Proficiency Selector */}
+          <ProficiencyDropdown 
+            value={proficiencyLevel} 
+            onChange={setProficiencyLevel} 
+          />
 
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--bg-panel)', border: `2px solid ${isDevMode ? '#ef4444' : 'var(--accent-primary)'}`, display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bold' }}>
             R
@@ -237,6 +250,7 @@ function App() {
         {view === 'question' && (
           <QuestionCard 
             worldId={selectedWorld} 
+            proficiencyLevel={proficiencyLevel}
             onSubmitPhase={handleSubmitPhase} 
             onCancelPhase={handleCancelPhase}
             currentPhase={replayConfig ? replayConfig.phase : (nodeProgress[selectedNode] || 0) + 1} 
@@ -248,6 +262,7 @@ function App() {
             worldId={selectedWorld} 
             worldName={worldName} 
             testPhase={currentTestPhase}
+            proficiencyLevel={proficiencyLevel}
             onSubmitTest={handleSubmitTest} 
           />
         )}
