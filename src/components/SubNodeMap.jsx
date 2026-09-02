@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Star, Check, Lock, Swords, FastForward, ArrowLeft } from 'lucide-react';
 
-export default function SubNodeMap({ worldName, nodeProgress, testPhase, isDevMode, onSelectNode, onSkipToTest, onSelectTest, onBack }) {
+export default function SubNodeMap({ worldName, nodeProgress, testPhase, isDevMode, onSelectNode, onSkipToTest, onSelectTest, onReplayNode, onBack }) {
+  const [replayNodeId, setReplayNodeId] = useState(null);
   const totalNodes = 10;
   const nodes = Array.from({ length: totalNodes }, (_, i) => i + 1);
   
@@ -90,19 +91,22 @@ export default function SubNodeMap({ worldName, nodeProgress, testPhase, isDevMo
               }}
             >
               <div 
-                onClick={() => isCurrent && onSelectNode(nodeId)}
+                onClick={() => {
+                  if (isCurrent) onSelectNode(nodeId);
+                  else if (isCompleted) setReplayNodeId(nodeId);
+                }}
                 style={{
                   width: '64px', height: '64px', borderRadius: '50%',
                   background: isLocked ? 'var(--bg-panel)' : `conic-gradient(var(--accent-secondary) ${progressPercent}%, var(--border-color) 0)`,
                   display: 'flex', justifyContent: 'center', alignItems: 'center',
-                  cursor: isCurrent ? 'pointer' : 'default',
+                  cursor: (isCurrent || isCompleted) ? 'pointer' : 'default',
                   boxShadow: glow,
                   transform: isCurrent ? 'scale(1.2)' : 'scale(1)',
                   transition: 'transform 0.2s ease',
                   padding: '4px'
                 }}
-                onMouseOver={(e) => { if(isCurrent) e.currentTarget.style.transform = 'scale(1.3)' }}
-                onMouseOut={(e) => { if(isCurrent) e.currentTarget.style.transform = 'scale(1.2)' }}
+                onMouseOver={(e) => { if(isCurrent || isCompleted) e.currentTarget.style.transform = isCurrent ? 'scale(1.3)' : 'scale(1.1)' }}
+                onMouseOut={(e) => { if(isCurrent || isCompleted) e.currentTarget.style.transform = isCurrent ? 'scale(1.2)' : 'scale(1)' }}
               >
                 <div style={{
                   width: '100%', height: '100%', borderRadius: '50%',
@@ -162,6 +166,33 @@ export default function SubNodeMap({ worldName, nodeProgress, testPhase, isDevMo
           </motion.div>
         )}
       </div>
+
+      {replayNodeId && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 100, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="glass-panel" 
+            style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '20px', width: '300px', border: '1px solid var(--accent-primary)' }}
+          >
+            <h3 style={{ textAlign: 'center', margin: 0 }}>Repetir Nodo {replayNodeId}</h3>
+            <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>Elige desde qué fase quieres empezar.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {[1, 2, 3, 4].map(ph => (
+                <button 
+                  key={ph} 
+                  className="btn-secondary" 
+                  onClick={() => onReplayNode(replayNodeId, ph)}
+                  style={{ background: 'var(--bg-panel)' }}
+                >
+                  Empezar desde Fase {ph}
+                </button>
+              ))}
+            </div>
+            <button className="btn-secondary" style={{ marginTop: '10px', background: 'transparent', border: '1px solid var(--border-color)' }} onClick={() => setReplayNodeId(null)}>Cancelar</button>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

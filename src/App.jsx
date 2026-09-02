@@ -26,6 +26,7 @@ function App() {
   const [devXp, setDevXp] = useState(0);
 
   const [testScore, setTestScore] = useState(0);
+  const [replayConfig, setReplayConfig] = useState(null); // { nodeId, phase }
 
   // Dynamic state getters based on mode
   const activeCompletedWorlds = isDevMode ? devCompletedWorlds : completedWorlds;
@@ -47,11 +48,13 @@ function App() {
 
   const handleBackToWorldMap = () => {
     setSelectedWorld(null);
+    setReplayConfig(null);
     setView('world-map');
   };
 
   const handleSelectNode = (nodeId) => {
     setSelectedNode(nodeId);
+    setReplayConfig(null);
     setView('question');
   };
 
@@ -59,7 +62,18 @@ function App() {
     setView('evaluation');
   };
 
+  const handleCancelPhase = () => {
+    setReplayConfig(null);
+    setView('subnode-map');
+  };
+
   const handleEvaluationComplete = () => {
+    if (replayConfig) {
+      setReplayConfig(null);
+      setView('subnode-map');
+      return;
+    }
+
     const currentWorldProgress = activeNodeProgress[selectedWorld] || {};
     const currentPhases = currentWorldProgress[selectedNode] || 0;
     const nextPhases = Math.min(currentPhases + 1, 4);
@@ -97,6 +111,11 @@ function App() {
         [selectedWorld]: all10
       });
     }
+  };
+
+  const handleReplayNode = (nodeId, startPhase) => {
+    setReplayConfig({ nodeId, phase: startPhase });
+    setView('question');
   };
 
   const handleSelectTest = () => {
@@ -210,6 +229,7 @@ function App() {
             onSelectNode={handleSelectNode} 
             onSkipToTest={handleSkipToTest}
             onSelectTest={handleSelectTest}
+            onReplayNode={handleReplayNode}
             onBack={handleBackToWorldMap}
           />
         )}
@@ -218,7 +238,8 @@ function App() {
           <QuestionCard 
             worldId={selectedWorld} 
             onSubmitPhase={handleSubmitPhase} 
-            currentPhase={(nodeProgress[selectedNode] || 0) + 1} 
+            onCancelPhase={handleCancelPhase}
+            currentPhase={replayConfig ? replayConfig.phase : (nodeProgress[selectedNode] || 0) + 1} 
           />
         )}
         

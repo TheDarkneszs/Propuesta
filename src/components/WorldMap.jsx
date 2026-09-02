@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Globe, Lock, CheckCircle2 } from 'lucide-react';
+import { Lock, CheckCircle2, TrendingUp, Activity, Triangle, Rocket } from 'lucide-react';
 
 export const worldsData = [
-  { id: 1, title: 'Funciones Lineales' },
-  { id: 2, title: 'Funciones Cuadráticas' },
-  { id: 3, title: 'Conceptos de Geometría' },
-  { id: 4, title: 'Aplicaciones del Mundo Real' },
+  { id: 1, title: 'Funciones Lineales', icon: TrendingUp },
+  { id: 2, title: 'Funciones Cuadráticas', icon: Activity },
+  { id: 3, title: 'Conceptos de Geometría', icon: Triangle },
+  { id: 4, title: 'Aplicaciones del Mundo Real', icon: Rocket },
 ];
 
 export default function WorldMap({ completedWorlds, onSelectWorld, isDevMode }) {
@@ -76,7 +76,7 @@ export default function WorldMap({ completedWorlds, onSelectWorld, isDevMode }) 
                 onMouseOver={(e) => { if(!isLocked) e.currentTarget.style.transform = isCurrent ? 'scale(1.2)' : 'scale(1.1)' }}
                 onMouseOut={(e) => { if(!isLocked) e.currentTarget.style.transform = isCurrent ? 'scale(1.1)' : 'scale(1)' }}
               >
-                {isCompleted ? <CheckCircle2 color={iconColor} size={40} /> : isLocked ? <Lock color={iconColor} size={40} /> : <Globe color={iconColor} size={40} />}
+                {isCompleted ? <CheckCircle2 color={iconColor} size={40} /> : isLocked ? <Lock color={iconColor} size={40} /> : <world.icon color={iconColor} size={40} />}
               </div>
 
               <div style={{
