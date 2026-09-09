@@ -116,6 +116,27 @@ function App() {
     }
   };
 
+  const handleSkipTestPhase = () => {
+    const newPhase = 2; // Completa el mundo de una vez en modo dev
+    const xpGained = 750; // XP total por ambas fases del test
+
+    if (isDevMode) {
+      setDevTestProgressByWorld({ ...devTestProgressByWorld, [selectedWorld]: newPhase });
+      setDevXp(devXp + xpGained);
+      if (!devCompletedWorlds.includes(selectedWorld)) {
+        setDevCompletedWorlds([...devCompletedWorlds, selectedWorld]);
+      }
+    } else {
+      setTestProgressByWorld({ ...testProgressByWorld, [selectedWorld]: newPhase });
+      setXp(xp + xpGained);
+      if (!completedWorlds.includes(selectedWorld)) {
+        setCompletedWorlds([...completedWorlds, selectedWorld]);
+      }
+    }
+
+    setView('world-map');
+  };
+
   const handleReplayNode = (nodeId, startPhase) => {
     setReplayConfig({ nodeId, phase: startPhase });
     setView('question');
@@ -241,6 +262,7 @@ function App() {
             isDevMode={isDevMode}
             onSelectNode={handleSelectNode} 
             onSkipToTest={handleSkipToTest}
+            onSkipTestPhase={handleSkipTestPhase}
             onSelectTest={handleSelectTest}
             onReplayNode={handleReplayNode}
             onBack={handleBackToWorldMap}

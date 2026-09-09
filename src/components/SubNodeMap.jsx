@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Star, Check, Lock, Swords, FastForward, ArrowLeft } from 'lucide-react';
 
-export default function SubNodeMap({ worldName, nodeProgress, testPhase, isDevMode, onSelectNode, onSkipToTest, onSelectTest, onReplayNode, onBack }) {
+export default function SubNodeMap({ worldName, nodeProgress, testPhase, isDevMode, onSelectNode, onSkipToTest, onSkipTestPhase, onSelectTest, onReplayNode, onBack }) {
   const [replayNodeId, setReplayNodeId] = useState(null);
   const totalNodes = 10;
   const nodes = Array.from({ length: totalNodes }, (_, i) => i + 1);
@@ -16,10 +16,6 @@ export default function SubNodeMap({ worldName, nodeProgress, testPhase, isDevMo
     if (i === totalNodes && nodeProgress[totalNodes] === 4) {
       activeNodeId = totalNodes + 1;
     }
-  }
-
-  if (isDevMode) {
-    activeNodeId = totalNodes + 1;
   }
 
   const isTestUnlocked = activeNodeId > totalNodes;
@@ -46,8 +42,8 @@ export default function SubNodeMap({ worldName, nodeProgress, testPhase, isDevMo
         </div>
         
         {isDevMode && (
-          <button onClick={onSkipToTest} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', border: '1px solid #ef4444', color: '#ef4444' }}>
-            <FastForward size={16} /> Dev: Saltar al Test
+          <button onClick={isTestUnlocked ? onSkipTestPhase : onSkipToTest} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', border: '1px solid #ef4444', color: '#ef4444' }}>
+            <FastForward size={16} /> {isTestUnlocked ? 'Dev: Pasar Test' : 'Dev: Saltar Nodos'}
           </button>
         )}
       </div>
